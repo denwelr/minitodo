@@ -34,7 +34,7 @@ const filterTasks = event => {
     for (const task of taskContainer.children) {
         const taskName = task.firstChild.textContent.toLowerCase();
         
-        if(taskName.includes(searchFormInput.value)) {
+        if(taskName.includes(searchFormInput.value.toLowerCase())) {
             task.hidden = false;
         } else {
             task.hidden = true;
