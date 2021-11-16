@@ -2,13 +2,9 @@ const addTaskForm = document.forms.addTaskForm;
 const taskContainer = document.querySelector('#items');
 const searchFormInput = document.forms.searchForm.searchInput;
 
-const addTask = event => {
-    event.preventDefault();
-
-    const taskName = addTaskForm.taskName.value;
-
+const createTask = taskName => {
     taskContainer.insertAdjacentHTML('afterbegin', `
-        <li class="list-group-item" data-task="${taskName.toLowerCase()}">
+        <li class="list-group-item" data-task="${taskName}">
             ${taskName}
 
             <button data-action="delete" type="button" class="btn btn-light btn-sm float-right">
@@ -16,22 +12,61 @@ const addTask = event => {
             </button>
         </li>
     `);
+};
+
+const getTasks = () => {
+    console.log("getTasks ~ tasks", localStorage)
+
+    for (let i = 0; i < localStorage.length; i++) {
+        const task = localStorage.key(i);
+
+        createTask(localStorage.getItem(task));
+
+        console.log("getTasks ~ task", task)
+    }
+};
+getTasks();
+
+const addTask = event => {
+    event.preventDefault();
+
+    const taskName = addTaskForm.taskName.value;
+    createTask(taskName);
+
+    localStorage.setItem(taskContainer.children.length - 1, taskName);
+    localStorage.setItem('test', 1);
+
+
+    console.log(localStorage);
 
     addTaskForm.reset();
 };
 
 const removeTask = event => {
     const target = event.target.closest('[data-action="delete"]');
-
     if(!target) return;
 
-    if(confirm(`Вы уверены, что хотите удалить задачу «${target.closest('.list-group-item').getAttribute('data-task')}»?`)) {
+    const taskName = target.closest('.list-group-item').getAttribute('data-task');
+
+    if(confirm(`Вы уверены, что хотите удалить задачу «${taskName}»?`)) {
         target.closest('.list-group-item').remove();
+
+        for (let i = 0; i < localStorage.length; i++) {
+            const task = localStorage.key(i);
+
+            if(localStorage.getItem(task) === taskName) {
+                localStorage.removeItem(task);
+                break;
+            }
+        }
+        console.log(localStorage);
     }
 };
 
 const filterTasks = event => {
-    for (const task of taskContainer.children) {
+    const tasks = Array.from(taskContainer.children);
+
+    tasks.forEach(task => {
         const taskName = task.firstChild.textContent.toLowerCase();
         
         if(taskName.includes(searchFormInput.value.toLowerCase())) {
@@ -39,9 +74,26 @@ const filterTasks = event => {
         } else {
             task.hidden = true;
         }
-    }
+    });
 };
 
 addTaskForm.addEventListener('submit', addTask);
 taskContainer.addEventListener('click', removeTask);
 searchFormInput.addEventListener('input', filterTasks);
+
+
+/* TEST */
+// window.addEventListener('storage', event => {
+
+//     // const localStorage = event.storageArea;
+
+
+//     // if(!event.newValue) {
+//     //     console.log(`Был удалён ключ ${event.key} со значением ${event.storageArea.getItem(event.key)}`);
+//     // } else {
+//     //     console.log(`Обновился ключ ${event.key}. Значение: ${event.storageArea.getItem(event.key)}`);
+//     // }
+
+    
+// });
+
