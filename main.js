@@ -15,14 +15,10 @@ const createTask = taskName => {
 };
 
 const getTasks = () => {
-    console.log("getTasks ~ tasks", localStorage)
-
     for (let i = 0; i < localStorage.length; i++) {
         const task = localStorage.key(i);
 
         createTask(localStorage.getItem(task));
-
-        console.log("getTasks ~ task", task)
     }
 };
 getTasks();
@@ -34,10 +30,6 @@ const addTask = event => {
     createTask(taskName);
 
     localStorage.setItem(taskContainer.children.length - 1, taskName);
-    localStorage.setItem('test', 1);
-
-
-    console.log(localStorage);
 
     addTaskForm.reset();
 };
@@ -59,7 +51,6 @@ const removeTask = event => {
                 break;
             }
         }
-        console.log(localStorage);
     }
 };
 
@@ -80,20 +71,3 @@ const filterTasks = event => {
 addTaskForm.addEventListener('submit', addTask);
 taskContainer.addEventListener('click', removeTask);
 searchFormInput.addEventListener('input', filterTasks);
-
-
-/* TEST */
-// window.addEventListener('storage', event => {
-
-//     // const localStorage = event.storageArea;
-
-
-//     // if(!event.newValue) {
-//     //     console.log(`Был удалён ключ ${event.key} со значением ${event.storageArea.getItem(event.key)}`);
-//     // } else {
-//     //     console.log(`Обновился ключ ${event.key}. Значение: ${event.storageArea.getItem(event.key)}`);
-//     // }
-
-    
-// });
-
